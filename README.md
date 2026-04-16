@@ -21,6 +21,10 @@ docker compose exec app npm run dev
 ### esse ultimo irá servir o host
 http://localhost:8000/
 
+## Documentção
+
+http://localhost:8000/api/documentation
+
 ## Testes
 
 ### Para rodar os testes
