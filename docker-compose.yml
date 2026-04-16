@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile.dev
+    container_name: app-news
+    working_dir: /var/www
+    volumes:
+      - ./application:/var/www
+      - vendor:/var/www/vendor
+    ports:
+      - "5173:5173"
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:latest
+    container_name: app-news-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./application:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: app_news_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app_network:
+
+volumes:
+  mysql_data:
+  vendor: 

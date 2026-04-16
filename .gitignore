@@ -1,0 +1,5 @@
+/application/vendor
+/application/storage/*
+/application/bootstrap/cache/*
+/application/.env
+.idea/

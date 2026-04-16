@@ -1,0 +1,36 @@
+FROM php:8.3-fpm
+
+RUN apt-get update && apt-get install -y \
+    git unzip curl zip \
+    libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+
+# Coverage driver for Pest/PHPUnit (--coverage)
+RUN pecl install pcov \
+    && docker-php-ext-enable pcov \
+    && echo "pcov.enabled=1" > /usr/local/etc/php/conf.d/pcov.ini
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# Copia tudo primeiro (simples e correto para dev)
+COPY application /var/www
+
+# Instala dependências
+RUN composer install --no-interaction --prefer-dist
+
+RUN apt-get update && apt-get install -y nodejs npm
+
+# Permissões
+RUN chmod -R 777 storage bootstrap/cache
+
+EXPOSE 9000
+
+COPY docker/app/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["php-fpm"]
