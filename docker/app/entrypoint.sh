@@ -4,7 +4,14 @@ set -e
 
 cd /var/www
 
-mkdir -p storage bootstrap/cache
+mkdir -p \
+  storage/app/public \
+  storage/framework/cache/data \
+  storage/framework/sessions \
+  storage/framework/testing \
+  storage/framework/views \
+  storage/logs \
+  bootstrap/cache
 
 if [ ! -f .env ]; then
   cp .env.example .env
