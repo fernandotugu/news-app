@@ -2,4 +2,5 @@
 /application/storage/*
 /application/bootstrap/cache/*
 /application/.env
+/application/coverage/
 .idea/
