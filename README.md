@@ -35,6 +35,6 @@ docker compose exec app ./vendor/bin/pest --coverage
 ### rodar e gerar html do covarage
 docker compose exec app ./vendor/bin/pest --coverage-html coverage
 
-apóa o comando acima, ira gerar um diretorio da raiz da pasta application chamado covarage, basta acessar essa pasta e abrir o arquivo index.html externamente no browser de preferencia
+após o comando acima, ira gerar um diretorio da raiz da pasta application chamado covarage, basta acessar essa pasta e abrir o arquivo index.html externamente no browser de preferencia
 
 
