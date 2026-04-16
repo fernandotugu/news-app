@@ -8,6 +8,7 @@ services:
     volumes:
       - ./application:/var/www
       - vendor:/var/www/vendor
+      - node_modules:/var/www/node_modules
     ports:
       - "5173:5173"
     networks:
@@ -53,4 +54,5 @@ networks:
 
 volumes:
   mysql_data:
-  vendor: 
+  vendor:
+  node_modules: 
