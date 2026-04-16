@@ -3,9 +3,8 @@ App de notícias feito em laravel.
 
 ## Iniciar o projeto para rodar local
 
-Copie primeiro o arquivo .env.example e renomeie para .env
-
-$cp application/.env.example application/.env
+# Copiar arquivo de variáveis de ambiente
+cp application/.env.example application/.env
 
 # Na primeira vez é necessario fazer o build do docker
 $ docker compose up -d --build
