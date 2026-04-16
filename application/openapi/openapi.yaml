@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: News API
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Prefixo das rotas definidas em routes/api.php
+tags:
+  - name: News
+    description: Notícias
+paths:
+  /news:
+    get:
+      operationId: apiNewsIndex
+      tags: [News]
+      summary: Lista notícias publicadas
+      description: Resposta paginada (LengthAwarePaginator do Laravel).
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/News"
+                  current_page:
+                    type: integer
+                    example: 1
+                  last_page:
+                    type: integer
+                    example: 1
+                  per_page:
+                    type: integer
+                    example: 6
+                  total:
+                    type: integer
+                    example: 12
+    post:
+      operationId: apiNewsStore
+      tags: [News]
+      summary: Cria e publica uma notícia
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreNewsRequest"
+      responses:
+        "201":
+          description: Criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsCreatedResponse"
+        "422":
+          description: Validação Laravel (`message` + `errors`) ou erro de domínio (`message` apenas)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DomainError"
+  /news/search:
+    get:
+      operationId: apiNewsSearch
+      tags: [News]
+      summary: Busca notícias (highlight HTML quando há termo)
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Termo de busca
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Paginação JSON (título/categoria podem conter marcação de highlight)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/News"
+                  current_page:
+                    type: integer
+                  last_page:
+                    type: integer
+                  per_page:
+                    type: integer
+                    example: 10
+                  total:
+                    type: integer
+        "422":
+          description: Erro na busca (ex. NewsSearchException)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DomainError"
+components:
+  schemas:
+    NewsCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Política
+    News:
+      type: object
+      required: [uuid, title, content, category_id]
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        category_id:
+          type: integer
+          example: 1
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        category:
+          $ref: "#/components/schemas/NewsCategory"
+    StoreNewsRequest:
+      type: object
+      required: [title, content, category_id]
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        content:
+          type: string
+        category_id:
+          type: integer
+          example: 1
+    NewsCreatedResponse:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+          example: Notícia criada com sucesso
+        data:
+          $ref: "#/components/schemas/News"
+    DomainError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Erro ao buscar notícias.

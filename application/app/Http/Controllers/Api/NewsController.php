@@ -14,8 +14,7 @@ class NewsController extends Controller
     public function __construct(
         private readonly NewsService $newsService,
         private readonly NewsSearchService $newsSearchService,
-    )
-    {
+    ) {
         //
     }
 
@@ -38,7 +37,7 @@ class NewsController extends Controller
 
         return response()->json([
             'message' => 'Notícia criada com sucesso',
-            'data' => $news
+            'data' => $news,
         ], 201);
     }
 
@@ -49,5 +48,4 @@ class NewsController extends Controller
 
         return response()->json($news);
     }
-
 }

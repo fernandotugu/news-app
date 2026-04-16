@@ -17,7 +17,12 @@ fi
 
 chmod -R 777 storage bootstrap/cache || true
 
-# Vite fica em devDependencies: com bind mount + volume, instala na primeira subida
+# PHP: volume `vendor` vazio na primeira subida — instala na imagem de runtime
+if [ ! -f vendor/autoload.php ]; then
+  composer install --no-interaction --prefer-dist --no-progress
+fi
+
+# Vite: volume `node_modules` vazio na primeira subida
 if [ ! -x node_modules/.bin/vite ]; then
   npm ci --no-audit --no-fund
 fi
